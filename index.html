@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Dashboard CSB | Transferencias & Ventas</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -188,7 +188,6 @@
     height: 420px;
   }
 
-  /* Tabla */
   .ventas-section {
     margin-top: 16px;
     margin-bottom: 32px;
@@ -219,12 +218,6 @@
     color: var(--accent);
   }
 
-  .ventas-sub {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.7rem;
-    color: var(--muted);
-  }
-
   .table-wrapper {
     overflow-x: auto;
     padding: 0 8px;
@@ -234,7 +227,7 @@
     width: 100%;
     border-collapse: collapse;
     font-size: 0.75rem;
-    font-family: 'DM Sans', monospace;
+    font-family: 'DM Mono', monospace;
     min-width: 1100px;
   }
 
@@ -300,7 +293,6 @@
     letter-spacing: 0.02em;
   }
 
-  /* Metas */
   .metas-section {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -361,12 +353,64 @@
     margin-top: 8px;
   }
 
-  .badge-meta {
-    background: var(--surface2);
-    border-radius: 20px;
-    padding: 4px 10px;
-    font-family: 'DM Mono', monospace;
+  .contacto-table-wrapper {
+    overflow-x: auto;
+    padding: 0;
+    max-height: 450px;
+    overflow-y: auto;
+  }
+
+  .contacto-table {
+    width: 100%;
+    border-collapse: collapse;
     font-size: 0.7rem;
+    font-family: 'DM Mono', monospace;
+    min-width: 1000px;
+  }
+
+  .contacto-table th {
+    background: var(--table-header);
+    color: var(--accent);
+    font-family: 'DM Mono', monospace;
+    font-weight: 500;
+    font-size: 0.65rem;
+    letter-spacing: 0.05em;
+    text-align: right;
+    padding: 12px 8px;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+
+  .contacto-table th:first-child {
+    text-align: left;
+    position: sticky;
+    left: 0;
+    background: var(--table-header);
+    z-index: 2;
+  }
+
+  .contacto-table td {
+    padding: 10px 8px;
+    text-align: right;
+    border-bottom: 1px solid rgba(31, 45, 69, 0.5);
+    color: var(--text);
+  }
+
+  .contacto-table td:first-child {
+    text-align: left;
+    font-weight: 500;
+    background: var(--surface);
+    position: sticky;
+    left: 0;
+    z-index: 1;
+  }
+
+  .contacto-table tr:hover td {
+    background: var(--table-row-hover);
+  }
+
+  .contacto-table tr:hover td:first-child {
+    background: var(--table-row-hover);
   }
 
   @keyframes fadeUp {
@@ -388,30 +432,59 @@
     <div class="header-left">
       <h1>Dashboard CSB</h1>
     </div>
-    
   </header>
 
   <!-- KPIs -->
   <div class="kpis">
     <div class="kpi c1">
       <div class="kpi-label">Total de llamadas</div>
-      <div class="kpi-value">18,670</div>
+      <div class="kpi-value" id="totalLlamadas">0</div>
       <div class="kpi-sub">Todos los agentes</div>
     </div>
     <div class="kpi c2">
       <div class="kpi-label">Media % Contacto</div>
-      <div class="kpi-value">54%</div>
+      <div class="kpi-value" id="mediaContacto">0%</div>
       <div class="kpi-sub">Línea de referencia</div>
     </div>
     <div class="kpi c3">
       <div class="kpi-label">Agentes sobre media</div>
       <div class="kpi-value" id="aboveCount">—</div>
-      <div class="kpi-sub">Por encima del 54%</div>
+      <div class="kpi-sub">Por encima de la media</div>
     </div>
     <div class="kpi c4">
       <div class="kpi-label">Agentes bajo media</div>
       <div class="kpi-value" id="belowCount">—</div>
-      <div class="kpi-sub">Por debajo del 54%</div>
+      <div class="kpi-sub">Por debajo de la media</div>
+    </div>
+  </div>
+
+  <!-- TABLA DE CONTACTO (encima de la primera gráfica) -->
+  <div class="chart-card">
+    <div class="chart-header">
+      <div><div class="chart-title">Detalle de Contacto</div></div>
+      <div class="legend-row">
+        <span class="legend-pill"><span class="dot" style="background:var(--accent)"></span> </span>
+      </div>
+    </div>
+    <div class="contacto-table-wrapper">
+      <table class="contacto-table" id="contactoDetalleTable">
+        <thead>
+          <tr>
+            <th>Agente</th>
+            <th>No le interesa</th>
+            <th>Contacto con tercero</th>
+            <th>Interesado</th>
+            <th>No Sujeto a Crédito</th>
+            <th>Llamada de servicio</th>
+            <th>TOTAL</th>
+            <th>X AGENTE</th>
+            <th>% CONTACTO</th>
+            <th>% RECHAZO</th>
+            <th>% NO SUJETO A CRÉDITO</th>
+          </tr>
+        </thead>
+        <tbody id="contactoDetalleBody"></tbody>
+      </table>
     </div>
   </div>
 
@@ -421,8 +494,7 @@
       <div class="chart-header">
         <div><div class="chart-title">% Contacto por Agente</div></div>
         <div class="legend-row">
-          <span class="legend-pill"><span class="dot" style="background:var(--above)"></span> Sobre media</span>
-          <span class="legend-pill"><span class="dot" style="background:var(--below)"></span> Bajo media</span>
+          
         </div>
       </div>
       <div class="chart-wrap-tall">
@@ -433,10 +505,7 @@
       <div class="chart-header">
         <div><div class="chart-title">Contacto</div></div>
         <div class="legend-row">
-          <span class="legend-pill"><span class="dot" style="background:var(--accent5)"></span> Total llamadas</span>
-          <span class="legend-pill"><span class="dot" style="background:var(--accent)"></span> Contacto</span>
-          <span class="legend-pill"><span class="dot" style="background:var(--accent2)"></span> Rechazo</span>
-          <span class="legend-pill"><span class="dot" style="background:var(--accent3)"></span> No Sujeto</span>
+          
         </div>
       </div>
       <div class="chart-wrap-tall">
@@ -445,77 +514,99 @@
     </div>
   </div>
 
-  <!-- TABLA: Transferencias (Total General) y Ventas (COMPRADA+CERRADOR+TMK) -->
+  <!-- Metas -->
   <div class="metas-section">
     <div class="meta-card">
       <div class="meta-title">🎯 Meta Transferencias</div>
-      <div class="meta-valor" id="metaTransferenciasValor">$6,000,000</div>
+      <div class="meta-valor" id="metaTransferenciasValor">$16,500,000</div>
       <div class="meta-progress"><div class="progress-fill" id="progressTransferFill" style="width:0%"></div></div>
-      <div class="meta-footer"><span>Alcanzado:</span><span id="transferActual">$5,207,000</span><span id="transferPercent">0%</span></div>
+      <div class="meta-footer"><span>Alcanzado:</span><span id="transferActual">$0</span><span id="transferPercent">0%</span></div>
       <div class="meta-footer"><span>📉 Restante:</span><span id="transferRemaining">—</span></div>
     </div>
-
     <div class="meta-card">
-      <div class="meta-title">📈 Meta Ventas </div>
-      <div class="meta-valor" id="metaVentasValor">$2,500,000</div>
+      <div class="meta-title">📈 Meta Ventas</div>
+      <div class="meta-valor" id="metaVentasValor">$8,200,000</div>
       <div class="meta-progress"><div class="progress-fill" id="progressVentasFill" style="width:0%"></div></div>
-      <div class="meta-footer"><span>Ventas actuales:</span><span id="ventasActualSpan">$1,954,500</span><span id="ventasPercent">0%</span></div>
-      <div class="meta-footer"><span>⚡ Restante para meta:</span><span id="ventasRemaining">—</span></div>
+      <div class="meta-footer"><span>Ventas actuales:</span><span id="ventasActualSpan">$0</span><span id="ventasPercent">0%</span></div>
+      <div class="meta-footer"><span>⚡ Restante:</span><span id="ventasRemaining">—</span></div>
     </div>
-    </div>
+  </div>
+
+  <!-- Tabla de Ventas -->
   <div class="ventas-section">
     <div class="ventas-card">
       <div class="ventas-header">
         <div>
           <div class="ventas-title">Transferencias y Ventas por Agente</div>
-          
-        </div>
-        <div hidden class="legend-row">
-          <span class="legend-pill"><span id="totalTransferenciasSpan">$0</span></span>
-          <span class="legend-pill"> <span id="totalVentasSpan">$0</span></span>
         </div>
       </div>
       <div class="table-wrapper">
         <table class="sales-table" id="salesTable">
           <thead>
-            <tr><th>Agente</th><th>BPM</th><th>COMPRADA</th><th>RECHAZADA</th><th>RECUPERADOR</th><th>SIN CAPACIDAD</th><th>CANCELADA</th><th>TMK</th><th>CERRADOR</th><th>Total General</th><th>Ventas</th> </tr>
+            <tr><th>Agente</th><th>BPM</th><th>COMPRADA</th><th>RECHAZADA</th><th>RECUPERADOR</th><th>SIN CAPACIDAD</th><th>CANCELADA</th><th>TMK</th><th>CERRADOR</th><th>Total General</th><th>Ventas</th></tr>
           </thead>
           <tbody id="salesTableBody"></tbody>
         </table>
       </div>
     </div>
   </div>
-
-  <!-- METAS: Transferencias (principal) y Ventas -->
- 
-
-    <div hidden class="meta-card">
-      <div class="meta-title">🏆 Top Performance (Contacto + Transferencias)</div>
-      <div class="meta-valor" id="topAgentName">—</div>
-      <div class="meta-footer"><span>Mayor % contacto + transferencias</span><span id="topAgentPct">—</span></div>
-      <div class="meta-progress" style="background:#1f2d45;"><div class="progress-fill" id="topProgressFill" style="width:0%; background:#ffd166;"></div></div>
-      <div class="meta-footer"><span>⭐ Agente destacado</span><span id="topAgentIndicator"></span></div>
-    </div>
-  </div>
 </div>
 
 <script>
-// ========== DATOS CONTACTO ==========
-const data = [
-  { agent: 'FLORES RAMIREZ ADRIANA ANGELICA',     contacto: 667, rechazo: 657, noSujeto: 9,  total: 1008, pctContacto: 0.6617 },
-  { agent: 'PAMELA VALERIA ARELLANO MARADIAGA',   contacto: 681, rechazo: 663, noSujeto: 8,  total: 1232, pctContacto: 0.5528 },
-  { agent: 'JAIME PACHECO GONZALEZ',      contacto: 605, rechazo: 567, noSujeto: 4,  total: 1204, pctContacto: 0.5025 },
-  { agent: 'WENDY VERONICA BAEZ MONROY',      contacto: 616, rechazo: 597, noSujeto: 5,  total: 872,  pctContacto: 0.7064 },
-  { agent: 'ROBERTO JAIR NAVARRETE CARRILLO',  contacto: 641, rechazo: 533, noSujeto: 0,  total: 1524, pctContacto: 0.4206 },
-  { agent: 'CASTRO MORALES AIDE SILVIA',     contacto: 678, rechazo: 667, noSujeto: 9,  total: 1142, pctContacto: 0.5937 },
-  { agent: 'YUNUEN GARCIA ZARAZUA',     contacto: 910, rechazo: 876, noSujeto: 20, total: 1668, pctContacto: 0.5456 },
-  { agent: 'JATZIRI NOHEMI SANCHEZ ARELLANO',      contacto: 695, rechazo: 660, noSujeto: 25, total: 1233, pctContacto: 0.5637 },
-  { agent: 'LOPEZ FLORES MARIA GUADALUPE ',      contacto: 1262, rechazo: 1231,noSujeto: 18, total: 1623, pctContacto: 0.7776 },
-  { agent: 'PADILLA TORRES ERICA TERESA',     contacto: 306, rechazo: 279, noSujeto: 20, total: 1103, pctContacto: 0.2774 },
-  { agent: 'JESSICA GOMEZ ZARAZUA',      contacto: 469,rechazo: 455, noSujeto: 8,  total: 1775, pctContacto: 0.2642 },
-  { agent: 'DIANA MAGALY HERNÁNDEZ GIL',  contacto: 423, rechazo: 398, noSujeto: 1,  total: 1023, pctContacto: 0.4135 },
-  { agent: 'RESENDIZ PERALTA NADIRAM',   contacto: 910, rechazo: 879, noSujeto: 5,  total: 1132, pctContacto: 0.8039 },
+// ========== DATOS CONTACTO DEL EXCEL ==========
+const contactData = [
+  { agente: "FLORES RAMIREZ ADRIANA ANGELICA", noInteresa: 657, contacto3ro: 341, interesado: 1, noSujeto: 9, llamadaServicio: 0, total: 1008, xAgente: 667, pctContacto: 66.17, pctRechazo: 65.18, pctNoSujeto: 1.35 },
+  { agente: "PAMELA VALERIA ARELLANO MARADIAGA", noInteresa: 663, contacto3ro: 551, interesado: 10, noSujeto: 8, llamadaServicio: 0, total: 1232, xAgente: 681, pctContacto: 55.28, pctRechazo: 53.81, pctNoSujeto: 1.17 },
+  { agente: "JAIME PACHECO GONZALEZ", noInteresa: 567, contacto3ro: 599, interesado: 17, noSujeto: 4, llamadaServicio: 17, total: 1204, xAgente: 605, pctContacto: 50.25, pctRechazo: 47.09, pctNoSujeto: 0.66 },
+  { agente: "WENDY VERONICA BAEZ MONROY", noInteresa: 597, contacto3ro: 256, interesado: 14, noSujeto: 5, llamadaServicio: 0, total: 872, xAgente: 616, pctContacto: 70.64, pctRechazo: 68.46, pctNoSujeto: 0.81 },
+  { agente: "ROBERTO JAIR NAVARRETE CARRILLO", noInteresa: 533, contacto3ro: 883, interesado: 108, noSujeto: 0, llamadaServicio: 0, total: 1524, xAgente: 641, pctContacto: 42.06, pctRechazo: 34.97, pctNoSujeto: 0 },
+  { agente: "CASTRO MORALES AIDE SILVIA", noInteresa: 667, contacto3ro: 464, interesado: 2, noSujeto: 9, llamadaServicio: 0, total: 1142, xAgente: 678, pctContacto: 59.37, pctRechazo: 58.41, pctNoSujeto: 1.33 },
+  { agente: "YUNUEN GARCIA ZARAZUA", noInteresa: 876, contacto3ro: 758, interesado: 13, noSujeto: 20, llamadaServicio: 1, total: 1668, xAgente: 910, pctContacto: 54.56, pctRechazo: 52.52, pctNoSujeto: 2.20 },
+  { agente: "JATZIRI NOHEMI SANCHEZ ARELLANO", noInteresa: 660, contacto3ro: 538, interesado: 10, noSujeto: 25, llamadaServicio: 0, total: 1233, xAgente: 695, pctContacto: 56.37, pctRechazo: 53.53, pctNoSujeto: 3.60 },
+  { agente: "LOPEZ FLORES MARIA GUADALUPE", noInteresa: 1231, contacto3ro: 361, interesado: 13, noSujeto: 18, llamadaServicio: 0, total: 1623, xAgente: 1262, pctContacto: 77.76, pctRechazo: 75.85, pctNoSujeto: 1.43 },
+  { agente: "PADILLA TORRES ERICA TERESA", noInteresa: 279, contacto3ro: 797, interesado: 6, noSujeto: 20, llamadaServicio: 1, total: 1103, xAgente: 306, pctContacto: 27.74, pctRechazo: 25.29, pctNoSujeto: 6.54 },
+  { agente: "JESSICA GOMEZ ZARAZUA", noInteresa: 455, contacto3ro: 1306, interesado: 6, noSujeto: 8, llamadaServicio: 0, total: 1775, xAgente: 469, pctContacto: 26.42, pctRechazo: 25.63, pctNoSujeto: 1.71 },
+  { agente: "DIANA MAGALY HERNÁNDEZ GIL", noInteresa: 398, contacto3ro: 600, interesado: 24, noSujeto: 1, llamadaServicio: 0, total: 1023, xAgente: 423, pctContacto: 41.35, pctRechazo: 38.91, pctNoSujeto: 0.24 },
+  { agente: "RESENDIZ PERALTA NADIRAM", noInteresa: 879, contacto3ro: 222, interesado: 25, noSujeto: 5, llamadaServicio: 1, total: 1132, xAgente: 910, pctContacto: 80.39, pctRechazo: 77.65, pctNoSujeto: 0.55 }
 ];
+
+// Calcular totales y media
+let totalLlamadasGeneral = 0;
+let sumaPctContacto = 0;
+contactData.forEach(d => {
+  totalLlamadasGeneral += d.total;
+  sumaPctContacto += d.pctContacto;
+});
+const mediaContacto = sumaPctContacto / contactData.length;
+
+// Actualizar KPIs
+document.getElementById('totalLlamadas').textContent = totalLlamadasGeneral.toLocaleString();
+document.getElementById('mediaContacto').textContent = mediaContacto.toFixed(1) + '%';
+
+const aboveCount = contactData.filter(d => d.pctContacto >= mediaContacto).length;
+const belowCount = contactData.length - aboveCount;
+document.getElementById('aboveCount').textContent = aboveCount;
+document.getElementById('belowCount').textContent = belowCount;
+
+// Llenar tabla de contacto
+const contactoBody = document.getElementById('contactoDetalleBody');
+contactData.forEach(d => {
+  const tr = document.createElement('tr');
+  tr.innerHTML = `
+    <td style="text-align:left">${d.agente}</td>
+    <td class="money">${d.noInteresa.toLocaleString()}</td>
+    <td class="money">${d.contacto3ro.toLocaleString()}</td>
+    <td class="money">${d.interesado.toLocaleString()}</td>
+    <td class="money">${d.noSujeto.toLocaleString()}</td>
+    <td class="money">${d.llamadaServicio.toLocaleString()}</td>
+    <td class="money">${d.total.toLocaleString()}</td>
+    <td class="money">${d.xAgente.toLocaleString()}</td>
+    <td class="money">${d.pctContacto.toFixed(1)}%</td>
+    <td class="money">${d.pctRechazo.toFixed(1)}%</td>
+    <td class="money">${d.pctNoSujeto.toFixed(1)}%</td>
+  `;
+  contactoBody.appendChild(tr);
+});
 
 // ========== DATOS VENTAS ==========
 const salesRaw = [
@@ -535,13 +626,8 @@ const salesRaw = [
   { agente: 'NADIRAM RESENDIZ', BPM: 150000, COMPRADA: 0, RECHAZADA: 0, RECUPERADOR: 0, SIN_CAPACIDAD: 164000, CANCELADA: 0, TMK: 0, CERRADOR: 0 }
 ];
 
-function normalizeName(name) {
-  return name.trim().toUpperCase().replace(/[^A-ZÁÉÍÓÚÑ]/g, '');
-}
-
-// Calcular totales
 let totals = { BPM:0, COMPRADA:0, RECHAZADA:0, RECUPERADOR:0, SIN_CAPACIDAD:0, CANCELADA:0, TMK:0, CERRADOR:0, TOTAL_GENERAL:0 };
-let totalVentasGeneral = 0; // COMPRADA + CERRADOR + TMK
+let totalVentasGeneral = 0;
 const tableRows = [];
 
 salesRaw.forEach(sale => {
@@ -560,40 +646,32 @@ salesRaw.forEach(sale => {
   tableRows.push({ ...sale, transferencia: totalTransfer, ventas: ventasAgente });
 });
 
-const transferenciasTotales = totals.TOTAL_GENERAL; // 5,207,000
-const ventasTotales = totalVentasGeneral;           // 1,954,500
-document.getElementById('totalTransferenciasSpan').innerHTML = `$${transferenciasTotales.toLocaleString()}`;
-document.getElementById('totalVentasSpan').innerHTML = `$${ventasTotales.toLocaleString()}`;
+const transferenciasTotales = totals.TOTAL_GENERAL;
+const ventasTotales = totalVentasGeneral;
 
-// KPIs contacto
-const MEDIA = 0.54;
-const above = data.filter(d => d.pctContacto >= MEDIA).length;
-const below = data.length - above;
-document.getElementById('aboveCount').textContent = above;
-document.getElementById('belowCount').textContent = below;
-
-// Renderizar tabla con columna adicional de Ventas
-const tbody = document.getElementById('salesTableBody');
+// Llenar tabla de ventas
+const tbodySales = document.getElementById('salesTableBody');
 tableRows.forEach(row => {
   const tr = document.createElement('tr');
   tr.innerHTML = `
     <td>${row.agente}</td>
-    <td class="money">$${row.BPM?.toLocaleString() || '0'}</td>
-    <td class="money">$${row.COMPRADA?.toLocaleString() || '0'}</td>
-    <td class="money">$${row.RECHAZADA?.toLocaleString() || '0'}</td>
-    <td class="money">$${row.RECUPERADOR?.toLocaleString() || '0'}</td>
-    <td class="money">$${row.SIN_CAPACIDAD?.toLocaleString() || '0'}</td>
-    <td class="money">$${row.CANCELADA?.toLocaleString() || '0'}</td>
-    <td class="money">$${row.TMK?.toLocaleString() || '0'}</td>
-    <td class="money">$${row.CERRADOR?.toLocaleString() || '0'}</td>
-    <td class="money">$${row.transferencia.toLocaleString()}</td>
+    <td class="money">$${(row.BPM || 0).toLocaleString()}</td>
+    <td class="money">$${(row.COMPRADA || 0).toLocaleString()}</td>
+    <td class="money">$${(row.RECHAZADA || 0).toLocaleString()}</td>
+    <td class="money">$${(row.RECUPERADOR || 0).toLocaleString()}</td>
+    <td class="money">$${(row.SIN_CAPACIDAD || 0).toLocaleString()}</td>
+    <td class="money">$${(row.CANCELADA || 0).toLocaleString()}</td>
+    <td class="money">$${(row.TMK || 0).toLocaleString()}</td>
+    <td class="money">$${(row.CERRADOR || 0).toLocaleString()}</td>
+    <td class="money">$${row.transferencia.toLocaleString()}
     <td class="money">$${row.ventas.toLocaleString()}</td>
   `;
-  tbody.appendChild(tr);
+  tbodySales.appendChild(tr);
 });
+
 const totalTr = document.createElement('tr');
 totalTr.className = 'total-row';
-totalTr.innerHTML = `<td><strong>TOTALES</strong></td>
+totalTr.innerHTML = `<tr><strong>TOTALES</strong></td>
   <td class="money">$${totals.BPM.toLocaleString()}</td>
   <td class="money">$${totals.COMPRADA.toLocaleString()}</td>
   <td class="money">$${totals.RECHAZADA.toLocaleString()}</td>
@@ -604,83 +682,59 @@ totalTr.innerHTML = `<td><strong>TOTALES</strong></td>
   <td class="money">$${totals.CERRADOR.toLocaleString()}</td>
   <td class="money"><strong>$${transferenciasTotales.toLocaleString()}</strong></td>
   <td class="money"><strong>$${ventasTotales.toLocaleString()}</strong></td>`;
-tbody.appendChild(totalTr);
+tbodySales.appendChild(totalTr);
 
-// ================= METAS =================
-// Meta Transferencias:
-const META_TRANSFER =  16500000;
+// Metas
+const META_TRANSFER = 16500000;
 const pctTransfer = (transferenciasTotales / META_TRANSFER) * 100;
 document.getElementById('metaTransferenciasValor').innerText = `$${META_TRANSFER.toLocaleString()}`;
 document.getElementById('transferActual').innerHTML = `$${transferenciasTotales.toLocaleString()}`;
 document.getElementById('transferPercent').innerHTML = `${pctTransfer.toFixed(1)}%`;
 document.getElementById('progressTransferFill').style.width = `${Math.min(pctTransfer, 100)}%`;
-const remainingTransfer = META_TRANSFER - transferenciasTotales;
-document.getElementById('transferRemaining').innerHTML = `$${remainingTransfer.toLocaleString()}`;
+document.getElementById('transferRemaining').innerHTML = `$${(META_TRANSFER - transferenciasTotales).toLocaleString()}`;
 
-// Meta Ventas:
 const META_VENTAS = 8200000;
 const pctVentas = (ventasTotales / META_VENTAS) * 100;
 document.getElementById('metaVentasValor').innerText = `$${META_VENTAS.toLocaleString()}`;
 document.getElementById('ventasActualSpan').innerHTML = `$${ventasTotales.toLocaleString()}`;
 document.getElementById('ventasPercent').innerHTML = `${pctVentas.toFixed(1)}%`;
 document.getElementById('progressVentasFill').style.width = `${Math.min(pctVentas, 100)}%`;
-const remainingVentas = META_VENTAS - ventasTotales;
-document.getElementById('ventasRemaining').innerHTML = `$${remainingVentas.toLocaleString()}`;
-
-// Top Performance basado en % contacto + monto de transferencias
-const maxPct = Math.max(...data.map(d => d.pctContacto));
-const maxTransfer = Math.max(...tableRows.map(r => r.transferencia));
-const scores = data.map(d => {
-  const row = tableRows.find(r => normalizeName(r.agente) === normalizeName(d.agent) || r.agente.includes(d.agent.split(' ')[0]));
-  const transferAgente = row ? row.transferencia : 0;
-  const normPct = d.pctContacto / maxPct;
-  const normTransfer = transferAgente / (maxTransfer || 1);
-  const score = (normPct * 0.6 + normTransfer * 0.4);
-  return { agent: d.agent, pct: d.pctContacto, transfer: transferAgente, score };
-});
-const best = scores.reduce((a,b) => a.score > b.score ? a : b);
-document.getElementById('topAgentName').innerHTML = best.agent.split(' ').slice(0,2).join(' ') + (best.agent.length > 20 ? '...' : '');
-document.getElementById('topAgentPct').innerHTML = `💰 $${best.transfer.toLocaleString()} · ${(best.pct*100).toFixed(1)}% contacto`;
-const topPercent = (best.score) * 100;
-document.getElementById('topProgressFill').style.width = `${topPercent}%`;
-document.getElementById('topAgentIndicator').innerHTML = best.transfer >= 500000 ? '🔥 Líder en volumen' : '📈 Potencia combinada';
+document.getElementById('ventasRemaining').innerHTML = `$${(META_VENTAS - ventasTotales).toLocaleString()}`;
 
 // ========== GRÁFICAS ==========
-const labels = data.map(d => d.agent);
-const barColors = data.map(d => d.pctContacto >= MEDIA ? 'rgba(52,211,153,0.85)' : 'rgba(248,113,113,0.85)');
-const borderColors = data.map(d => d.pctContacto >= MEDIA ? '#34d399' : '#f87171');
-const avgLine = data.map(() => MEDIA);
+const labels = contactData.map(d => d.agente.length > 25 ? d.agente.substring(0, 22) + '...' : d.agente);
+const barColors = contactData.map(d => d.pctContacto >= mediaContacto ? 'rgba(52,211,153,0.85)' : 'rgba(248,113,113,0.85)');
 
 new Chart(document.getElementById('barChart').getContext('2d'), {
   type: 'bar',
   data: {
-    labels,
+    labels: labels,
     datasets: [
-      { label: '% Contacto', data: data.map(d => +(d.pctContacto * 100).toFixed(1)), backgroundColor: barColors, borderColor: borderColors, borderWidth: 1.5, borderRadius: 6, order: 2 },
-      { label: 'Media 54%', data: avgLine.map(v => +(v * 100).toFixed(1)), type: 'line', borderColor: '#ffd166', borderWidth: 2, borderDash: [8, 4], pointRadius: 0, fill: false, order: 1 }
+      { label: '% Contacto', data: contactData.map(d => d.pctContacto), backgroundColor: barColors, borderColor: '#fff', borderWidth: 0.5, borderRadius: 6, order: 2 },
+      { label: `Media ${mediaContacto.toFixed(1)}%`, data: contactData.map(() => mediaContacto), type: 'line', borderColor: '#ffd166', borderWidth: 2, borderDash: [8, 4], pointRadius: 0, fill: false, order: 1 }
     ]
   },
   options: {
     responsive: true, maintainAspectRatio: false,
-    plugins: { legend: { display: false }, tooltip: { backgroundColor: '#111827', borderColor: '#1f2d45', callbacks: { label: ctx => ctx.dataset.label === 'Media 54%' ? `Media: ${ctx.parsed.y}%` : `Contacto: ${ctx.parsed.y}%` } } },
-    scales: { x: { ticks: { color: '#64748b', font: { size: 9 }, maxRotation: 45 }, grid: { color: 'rgba(31,45,69,0.6)' } }, y: { min: 0, max: 100, ticks: { callback: v => v+'%' }, grid: { color: 'rgba(31,45,69,0.6)' } } }
+    plugins: { legend: { position: 'top', labels: { color: '#e2e8f0' } }, tooltip: { backgroundColor: '#111827', borderColor: '#1f2d45', callbacks: { label: ctx => `${ctx.dataset.label}: ${ctx.parsed.y.toFixed(1)}%` } } },
+    scales: { x: { ticks: { color: '#64748b', font: { size: 9 }, maxRotation: 45 }, grid: { color: 'rgba(31,45,69,0.6)' } }, y: { min: 0, max: 100, ticks: { callback: v => v+'%', color: '#64748b' }, grid: { color: 'rgba(31,45,69,0.6)' } } }
   }
 });
 
 new Chart(document.getElementById('groupedChart').getContext('2d'), {
   type: 'bar',
   data: {
-    labels,
+    labels: labels,
     datasets: [
-      { label: 'Total', data: data.map(d => d.total), backgroundColor: 'rgba(143, 50, 255, 0.85)', borderColor: '#8f32ff', borderRadius: 4 },
-      { label: 'Contacto', data: data.map(d => d.contacto), backgroundColor: 'rgba(0,229,255,0.75)', borderColor: '#00e5ff', borderRadius: 4 },
-      { label: 'Rechazo', data: data.map(d => d.rechazo), backgroundColor: 'rgba(255,107,53,0.75)', borderColor: '#ff6b35', borderRadius: 4 },
-      { label: 'No Sujeto', data: data.map(d => d.noSujeto), backgroundColor: 'rgba(255,165,0,0.85)', borderColor: '#FFA500', borderRadius: 4 }
+      { label: 'Total Llamadas', data: contactData.map(d => d.total), backgroundColor: 'rgba(143, 50, 255, 0.85)', borderColor: '#8f32ff', borderRadius: 4 },
+      { label: 'Contacto (X AGENTE)', data: contactData.map(d => d.xAgente), backgroundColor: 'rgba(0,229,255,0.75)', borderColor: '#00e5ff', borderRadius: 4 },
+      { label: 'No le interesa', data: contactData.map(d => d.noInteresa), backgroundColor: 'rgba(255,107,53,0.75)', borderColor: '#ff6b35', borderRadius: 4 },
+      { label: 'No Sujeto', data: contactData.map(d => d.noSujeto), backgroundColor: 'rgba(255,165,0,0.85)', borderColor: '#FFA500', borderRadius: 4 }
     ]
   },
   options: {
     responsive: true, maintainAspectRatio: false,
-    plugins: { legend: { display: false }, tooltip: { backgroundColor: '#111827', borderColor: '#1f2d45' } },
+    plugins: { legend: { position: 'top', labels: { color: '#e2e8f0', font: { size: 10 } } }, tooltip: { backgroundColor: '#111827', borderColor: '#1f2d45' } },
     scales: { x: { ticks: { color: '#64748b', maxRotation: 45 }, grid: { color: 'rgba(31,45,69,0.6)' } }, y: { ticks: { color: '#64748b' }, grid: { color: 'rgba(31,45,69,0.6)' } } }
   }
 });
