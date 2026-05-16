@@ -727,7 +727,7 @@ new Chart(document.getElementById('groupedChart').getContext('2d'), {
     labels: labels,
     datasets: [
       { label: 'Total Llamadas', data: contactData.map(d => d.total), backgroundColor: 'rgba(143, 50, 255, 0.85)', borderColor: '#8f32ff', borderRadius: 4 },
-      { label: 'Contacto (X AGENTE)', data: contactData.map(d => d.xAgente), backgroundColor: 'rgba(0,229,255,0.75)', borderColor: '#00e5ff', borderRadius: 4 },
+      { label: 'Contacto', data: contactData.map(d => d.xAgente), backgroundColor: 'rgba(0,229,255,0.75)', borderColor: '#00e5ff', borderRadius: 4 },
       { label: 'No le interesa', data: contactData.map(d => d.noInteresa), backgroundColor: 'rgba(255,107,53,0.75)', borderColor: '#ff6b35', borderRadius: 4 },
       { label: 'No Sujeto', data: contactData.map(d => d.noSujeto), backgroundColor: 'rgba(255,165,0,0.85)', borderColor: '#FFA500', borderRadius: 4 }
     ]
